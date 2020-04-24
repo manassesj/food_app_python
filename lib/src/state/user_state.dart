@@ -23,15 +23,18 @@ class UserState extends ChangeNotifier {
 
     try {
       final Map<String, dynamic> userData = {
-        'name': user.name,
+        'name' : user.name,
         'password': user.passoword,
       };
 
+
       final http.Response response = await http.post(
-          'http://192.168.1.104:5000/user/insert',
-          body: json.encode(userData));
+        'http://192.168.1.108:5000/user/insert',
+        body: json.encode(userData)
+      );
 
       final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
       notifyListeners();
       return Future.value(true);
     } catch (e) {
