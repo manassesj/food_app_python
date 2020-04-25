@@ -13,6 +13,11 @@ class UserState extends ChangeNotifier {
     return _isLoading;
   }
 
+  set setIsLoading(bool value){
+    this._isLoading = value;
+    notifyListeners();
+  }
+
   List<User> get userList {
     return _userList;
   }
@@ -29,7 +34,7 @@ class UserState extends ChangeNotifier {
 
 
       final http.Response response = await http.post(
-        'http://192.168.1.108:5000/user/insert',
+        'http:',
         body: json.encode(userData)
       );
 
@@ -43,7 +48,7 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<String> userLogin(User user) async {
+  Future<bool> userLogin(User user) async {
     _isLoading = true;
     notifyListeners();
 
@@ -54,16 +59,17 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://192.168.1.104:5000/user/login',
+          'http:',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
       status = responseData['status'].toString();
+      print(status);
       notifyListeners();
-      return Future.value(status);
+      return Future.value(true);
     } catch (e) {
       notifyListeners();
-      return Future.value("ERROR2");
+      return Future.value(false);
     }
   }
 }
