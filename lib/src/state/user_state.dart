@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:food_app_python/src/models/user.dart';
+import 'package:food_app_python/src/state/session.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class UserState extends ChangeNotifier {
   List<User> _userList = List<User>();
@@ -13,7 +15,7 @@ class UserState extends ChangeNotifier {
     return _isLoading;
   }
 
-  set setIsLoading(bool value){
+  set setIsLoading(bool value) {
     this._isLoading = value;
     notifyListeners();
   }
@@ -28,15 +30,13 @@ class UserState extends ChangeNotifier {
 
     try {
       final Map<String, dynamic> userData = {
-        'name' : user.name,
+        'name': user.name,
         'password': user.passoword,
       };
 
-
       final http.Response response = await http.post(
-        'http:',
-        body: json.encode(userData)
-      );
+          'http://192.168.1',
+          body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
       print(responseData);
@@ -48,7 +48,8 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<bool> userLogin(User user) async {
+  Future<bool> userLogin(User user, BuildContext context) async {
+    User user;
     _isLoading = true;
     notifyListeners();
 
@@ -59,12 +60,18 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http:',
+          'http://192.168.1',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
-      status = responseData['status'].toString();
-      print(status);
+      user = User(
+        id: responseData['id'],
+        name: responseData['name'],
+        passoword: responseData['password'],
+      );
+
+      Provider.of<Session>(context).setSession(user);
+
       notifyListeners();
       return Future.value(true);
     } catch (e) {
