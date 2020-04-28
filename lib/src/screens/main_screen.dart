@@ -40,14 +40,65 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {  
-
+  Widget build(BuildContext context) {
     User user = Provider.of<Session>(context).userSession;
     print(user.name);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.blueAccent),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.blueAccent),
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.add),
+                title: Text(
+                  'Add Food Item',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              Divider(
+                color: Colors.black,
+                height: 2,
+                indent: 10,
+                endIndent: 10.0,
+              )
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentTabIndex,
+          type: BottomNavigationBarType.fixed,
+          
+          onTap: (int index) {
+            setState(() {
+              currentTabIndex = index;
+              currentPage = pages[index];
+            });
+          },
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.explore),
+              title: Text('Explore'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              title: Text('Cart'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('Profile'),
+            ),
+          ],
+        ),
       ),
     );
   }
