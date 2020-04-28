@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 class UserState extends ChangeNotifier {
   List<User> _userList = List<User>();
   bool _isLoading = false;
+  User _userLogged = User(id: -1, name: 'None', passoword: 'None');
   String status;
 
   bool get isLoading {
@@ -24,6 +25,10 @@ class UserState extends ChangeNotifier {
     return _userList;
   }
 
+  User get userLogged {
+    return _userLogged;
+  }
+
   Future<bool> addUser(User user) async {
     _isLoading = true;
     notifyListeners();
@@ -35,7 +40,7 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://192.168.1',
+          'http://192.168.1.108:5000/user/login',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -48,11 +53,10 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<bool> userLogin(User user, BuildContext context) async {
-    User user;
+  Future<User> userLogin(User user, BuildContext context) async {
+    print(user.name);
     _isLoading = true;
     notifyListeners();
-
     try {
       final Map<String, dynamic> userData = {
         'name': user.name,
@@ -60,23 +64,21 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://192.168.1',
+          'http://192.168.1.108:5000/user/login',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
-      user = User(
+      _userLogged = User(
         id: responseData['id'],
         name: responseData['name'],
         passoword: responseData['password'],
       );
 
-      Provider.of<Session>(context).setSession(user);
-
       notifyListeners();
-      return Future.value(true);
+      return Future.value(_userLogged);
     } catch (e) {
       notifyListeners();
-      return Future.value(false);
+      return Future.value(_userLogged);
     }
   }
 }

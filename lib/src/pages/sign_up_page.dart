@@ -93,7 +93,7 @@ class _SignUpState extends State<SignUp> {
     bool value = await addUser(user);
     print(value);
     if (value) {
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop();
       SnackBar snackBar = SnackBar(
         content: Text(
           'User successfully added',
@@ -101,9 +101,8 @@ class _SignUpState extends State<SignUp> {
         ),
       );
       _scaffoldStateKey.currentState.showSnackBar(snackBar);
-      Provider.of<UserState>(context, listen: false).setIsLoading = false;
     } else {
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop();
       SnackBar snackBar = SnackBar(
         content: Text(
           'Fail to add user',

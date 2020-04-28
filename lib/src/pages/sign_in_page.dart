@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_app_python/src/models/user.dart';
 import 'package:food_app_python/src/state/user_state.dart';
+import 'package:food_app_python/src/state/session.dart';
 import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
@@ -70,7 +71,7 @@ class _SignInState extends State<SignIn> {
                       onTap: () {
                         onSubmit(userState.userLogin);
                         print('pushed');
-                        if (userState.isLoading) {
+                        if (userState.userLogged.id == -1) {
                           showLoadingIndicator();
                         }
                       },
@@ -90,13 +91,13 @@ class _SignInState extends State<SignIn> {
 
     final User user = User(name: name, passoword: password);
 
-    bool value = await userLogin(user, context);
-    print(value);
-    if (value) {
+    User value = await userLogin(user, context);
+    print(value.id);
+    if (value.id != -1) {
+      Provider.of<Session>(context,listen: false).setSession(value);
       Navigator.of(context).pushReplacementNamed('/home');
     } else {
       Navigator.of(context).pop();
-
       SnackBar snackBar = SnackBar(
         content: Text(
           'Fail to Login',
