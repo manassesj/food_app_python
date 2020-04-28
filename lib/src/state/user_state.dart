@@ -40,7 +40,7 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://192.168.1.108:5000/user/login',
+          'http://',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -64,7 +64,7 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://192.168.1.108:5000/user/login',
+          'http://',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
