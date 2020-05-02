@@ -40,7 +40,7 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://',
+          'http://.../user/insert',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -64,7 +64,7 @@ class UserState extends ChangeNotifier {
       };
 
       final http.Response response = await http.post(
-          'http://',
+          'http://.../user/login',
           body: json.encode(userData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);

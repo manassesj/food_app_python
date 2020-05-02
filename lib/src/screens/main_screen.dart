@@ -60,6 +60,9 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 16.0,
                   ),
                 ),
+                onTap: (){
+                  Navigator.of(context).pushNamed('/addFood');
+                },
               ),
               Divider(
                 color: Colors.black,

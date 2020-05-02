@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app_python/src/pages/add_food_page.dart';
 import 'package:food_app_python/src/pages/sign_in_page.dart';
 import 'package:food_app_python/src/pages/sign_up_page.dart';
 import 'package:food_app_python/src/screens/launch_screen.dart';
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
           '/home': (context) => MainScreen(),
           '/signIn': (context) => SignIn(),
           '/signUp': (context) => SignUp(),
+          '/addFood': (context) => AddFood(),
         },
       ),
     );
