@@ -1,7 +1,7 @@
 class Food {
   final int id;
   final String name;
-  final String imagePath;
+  final String image;
   final String description;
   final int categoryId;
   final double price;
@@ -11,7 +11,7 @@ class Food {
   Food({
       this.id,
       this.name,
-      this.imagePath,
+      this.image,
       this.description,
       this.categoryId,
       this.price,

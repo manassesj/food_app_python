@@ -4,6 +4,7 @@ import 'package:food_app_python/src/pages/sign_in_page.dart';
 import 'package:food_app_python/src/pages/sign_up_page.dart';
 import 'package:food_app_python/src/screens/launch_screen.dart';
 import 'package:food_app_python/src/screens/main_screen.dart';
+import 'package:food_app_python/src/state/food_state.dart';
 import 'package:food_app_python/src/state/session.dart';
 import 'package:food_app_python/src/state/user_state.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Session(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FoodState(),
         ),
       ],
       child: MaterialApp(
