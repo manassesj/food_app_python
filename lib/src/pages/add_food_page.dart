@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:food_app_python/src/models/food.dart';
 import 'package:food_app_python/src/state/food_state.dart';
+import 'package:food_app_python/src/utility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -21,64 +22,54 @@ class _AddFoodState extends State<AddFood> {
   double discount;
   double rating;
 
-  Future<File> file;
-  String status = '';
-  File tmpFile;
-  String errMessage = 'Error Uploading Image';
+  Image imageFromPreferences;
+
+  Future<File> imagefile;
+
+  pickImageFromGallery(ImageSource source) {
+    setState(() {
+      imagefile = ImagePicker.pickImage(source: source);
+    });
+  }
+
+  loadImageFromPreferences() {
+    Utility.getImageFromPreferences().then((img) {
+      if (null == img) {
+        return;
+      }
+      setState(() {
+        imageFromPreferences = Utility.imageFromBase64String(img);
+      });
+    });
+  }
+
+  Widget imageFromGallery() {
+    return FutureBuilder<File>(
+      future: imagefile,
+      builder: (BuildContext contex, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (null == snapshot.data) {
+            return Text("Error", textAlign: TextAlign.center);
+          }
+
+          base64Image = Utility.base64String(snapshot.data.readAsBytesSync());
+          print(base64Image);
+          Utility.saveImageToPreferences(base64Image);
+          return Image.file(snapshot.data);
+        }
+        if (null != snapshot.error) {
+          return const Text('Error Picking Image', textAlign: TextAlign.center);
+        }
+        return const Text(
+          'No image selected',
+          textAlign: TextAlign.center,
+        );
+      },
+    );
+  }
 
   GlobalKey<FormState> _foodItemFormKey = GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey();
-
-  chooseImage() {
-    setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.gallery);
-    });
-    setStatus('');
-  }
-
-  setStatus(String message) {
-    setState(() {
-      status = message;
-    });
-  }
-
-  Widget showImage() {
-    return FutureBuilder<File>(
-        future: file,
-        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.data != null) {
-            tmpFile = snapshot.data;
-            base64Image = base64Encode(snapshot.data.readAsBytesSync());
-            print("Image: " + base64Image);
-            return Container(
-              width: 200.0,
-              height: 200.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: FileImage(snapshot.data), fit: BoxFit.cover),
-              ),
-            );
-            // return Flexible(
-            //   child: Image.file(
-            //     snapshot.data,
-            //     fit: BoxFit.contain,
-            //   ),
-            // );
-          } else if (snapshot.error != null) {
-            return const Text(
-              'Error Picking Image',
-              textAlign: TextAlign.center,
-            );
-          } else {
-            return const Text(
-              'No Image Selected',
-              textAlign: TextAlign.center,
-            );
-          }
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,26 +105,38 @@ class _AddFoodState extends State<AddFood> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        showImage(),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        OutlineButton(
-                          onPressed: chooseImage,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      imageFromGallery(),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      GestureDetector(
+                        child: Container(
+                          height: 30,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 5.0),
+                          decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(15.0)),
                           child: Text(
-                            'Choose Image',
+                            'Pick Image',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15.0),
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
-                      ],
-                    ),
+                        onTap: () {
+                          pickImageFromGallery(ImageSource.gallery);
+                        },
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                    ],
                   ),
                   _buildTextFormField('Name'),
                   _buildTextFormField('Category'),
@@ -192,14 +195,13 @@ class _AddFoodState extends State<AddFood> {
       print(rating);
 
       final Food food = Food(
-        name: name,
-        image: base64Image,
-        description: description,
-        categoryId: categoryId,
-        discount: discount,
-        price: price,
-        rating: rating
-      );  
+          name: name,
+          image: base64Image,
+          description: description,
+          categoryId: categoryId,
+          discount: discount,
+          price: price,
+          rating: rating);
 
       bool value = await addFood(food);
       if (value) {
@@ -207,7 +209,7 @@ class _AddFoodState extends State<AddFood> {
         SnackBar snackBar = SnackBar(
           content: Text('Food item successfully added'),
         );
-        
+
         _scaffoldStateKey.currentState.showSnackBar(snackBar);
       } else {
         Navigator.of(context).pop();
@@ -216,7 +218,8 @@ class _AddFoodState extends State<AddFood> {
         );
         _scaffoldStateKey.currentState.showSnackBar(snackBar);
       }
-    };
+    }
+    ;
   }
 
   Future<void> showLoadingInficator() {

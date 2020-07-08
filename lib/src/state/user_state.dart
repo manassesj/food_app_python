@@ -7,7 +7,6 @@ import 'package:food_app_python/src/state/constants.dart';
 import 'package:http/http.dart' as http;
 
 class UserState extends ChangeNotifier {
-  List<User> _userList = List<User>();
   bool _isLoading = false;
   User _userLogged = User(id: -1, name: 'None', passoword: 'None');
   String status;
@@ -20,11 +19,7 @@ class UserState extends ChangeNotifier {
     this._isLoading = value;
     notifyListeners();
   }
-
-  List<User> get userList {
-    return _userList;
-  }
-
+  
   User get userLogged {
     return _userLogged;
   }

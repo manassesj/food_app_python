@@ -6,6 +6,7 @@ import 'package:food_app_python/src/pages/home_page.dart';
 import 'package:food_app_python/src/pages/order_page.dart';
 import 'package:food_app_python/src/pages/explore_page.dart';
 import 'package:food_app_python/src/pages/profile_page.dart';
+import 'package:food_app_python/src/state/food_state.dart';
 import 'package:food_app_python/src/state/session.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     //initializing pages
+
     homePage = HomePage();
     orderPage = OrderPage();
     explorePage = ExplorePage();
@@ -46,9 +48,10 @@ class _MainScreenState extends State<MainScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.blueAccent),
-        ),
+        ),body: pages[currentTabIndex],
         drawer: Drawer(
           child: Column(
             children: <Widget>[

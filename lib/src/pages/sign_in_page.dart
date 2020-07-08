@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app_python/src/models/user.dart';
+import 'package:food_app_python/src/state/food_state.dart';
 import 'package:food_app_python/src/state/user_state.dart';
 import 'package:food_app_python/src/state/session.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +34,10 @@ class _SignInState extends State<SignIn> {
                   Text(
                     'Sign In',
                     style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
                   ),
                   SizedBox(
                     height: 40.0,
@@ -48,35 +50,36 @@ class _SignInState extends State<SignIn> {
                   SizedBox(
                     height: 50.0,
                   ),
-                  Consumer<UserState>(builder: (builder, userState, child) {
-                    return GestureDetector(
-                      child: Container(
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 19.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.5,
+                  Consumer<UserState>(
+                    builder: (builder, userState, child) {
+                      return GestureDetector(
+                        child: Container(
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                fontSize: 19.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 1.5,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      onTap: () {
-                        onSubmit(userState.userLogin);
-                        print('pushed');
-                        if (userState.userLogged.id == -1) {
-                          showLoadingIndicator();
-                        }
-                      },
-                    );
-                  },
+                        onTap: () {
+                          onSubmit(userState.userLogin);
+                          print('pushed');
+                          if (userState.userLogged.id == -1) {
+                            showLoadingIndicator();
+                          }
+                        },
+                      );
+                    },
                   )
                 ],
               ),
@@ -95,7 +98,8 @@ class _SignInState extends State<SignIn> {
     User value = await userLogin(user, context);
     print(value.id);
     if (value.id != -1) {
-      Provider.of<Session>(context,listen: false).setSession(value);
+      Provider.of<FoodState>(context, listen: false).fetchFoods();
+      Provider.of<Session>(context, listen: false).setSession(value);
       Navigator.of(context).pushReplacementNamed('/home');
     } else {
       Navigator.of(context).pop();
@@ -107,7 +111,6 @@ class _SignInState extends State<SignIn> {
       );
 
       _scaffoldStateKey.currentState.showSnackBar(snackBar);
-
     }
   }
 
